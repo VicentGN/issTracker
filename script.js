@@ -21,7 +21,7 @@ function drawISSOnMap() {
             // Handle the data here
             issLocation.setLatLng([data.position.satlatitude, data.position.satlongitude]);
             const customIcon = L.icon({
-                iconUrl: '/assets/iss.png',
+                iconUrl: './assets/iss.png',
                 iconSize: [64, 64],
                 iconAnchor: [16, 32],
                 popupAnchor: [0, -32]
