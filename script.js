@@ -8,7 +8,6 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 }).addTo(map);
 
 function main() {
-    getCurrentNumberOfAstronauts();
     window.setInterval(() => {
         drawISSOnMap();
     }, 5000);
@@ -16,14 +15,11 @@ function main() {
 
 
 function drawISSOnMap() {
-    fetch('http://api.open-notify.org/iss-now.json')
+    fetch('https://polibackend.onrender.com/satellite/getPosition?norad=25544')
         .then(response => response.json())
         .then(data => {
             // Handle the data here
-            issLocation.setLatLng([data.iss_position.latitude, data.iss_position.longitude]);
-            const list = Object.entries(astronautsInfo.people).filter(person => person[1].craft === 'ISS').map(([key, value]) => `<li>${value.name}</li>`).join('');
-            const popupContent = `<h4>Current astronauts</h4><ul>${list}</ul>`;
-            issLocation.bindPopup(popupContent)
+            issLocation.setLatLng([data.position.satlatitude, data.position.satlongitude]);
             const customIcon = L.icon({
                 iconUrl: '/assets/iss.png',
                 iconSize: [64, 64],
@@ -32,7 +28,7 @@ function drawISSOnMap() {
             });
             issLocation.setIcon(customIcon)
             issLocation.addTo(map);
-            map.setView([data.iss_position.latitude, data.iss_position.longitude], 5);
+            map.setView([data.position.satlatitude, data.position.satlongitude], 5);
 
         })
         .catch(error => {
@@ -40,19 +36,6 @@ function drawISSOnMap() {
             console.error('Error:', error);
         });
 
-}
-
-function getCurrentNumberOfAstronauts() {
-    fetch('http://api.open-notify.org/astros.json')
-        .then(response => response.json())
-        .then(data => {
-            // Handle the data here
-            astronautsInfo = data;
-        })
-        .catch(error => {
-            // Handle any errors that occur during the fetch request
-            console.error('Error:', error);
-        });
 }
 
 // The application starts here
